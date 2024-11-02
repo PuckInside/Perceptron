@@ -21,8 +21,8 @@ class Perceptron:
             for x, y in zip(inputs, target):
                 predict = self.Predict(x)
                 loss += np.mean(np.power(predict - y, 2))
-                output_gradient = 2 * (predict - y) / len(y)
 
+                output_gradient = 2 * (predict - y) / len(y)
                 for layer in self.layers[::-1]:
                     output_gradient = layer.Backward(output_gradient, learning_rate)
         
