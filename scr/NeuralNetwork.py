@@ -1,8 +1,11 @@
 import numpy as np
-from Layer import Layer
+
+from Layers import Layer
+from Losses import MSE
 
 class Perceptron:
     def __init__(self, network_shape: list):
+        self.loss = MSE()
         self.layers = network_shape
 
     def Predict(self, inputs: list) -> list:
@@ -17,9 +20,9 @@ class Perceptron:
             loss = 0
             for x, y in zip(inputs, target):
                 predict = self.Predict(x)
-                loss += np.mean(np.power(predict - y, 2))
+                loss += self.loss.CalculateLoss(y, predict)
 
-                output_gradient = 2 * (predict - y) / len(y)
+                output_gradient = self.loss.CalculateDerivative(y, predict)
                 for layer in self.layers[::-1]:
                     output_gradient = layer.Backward(output_gradient, learning_rate)
         
