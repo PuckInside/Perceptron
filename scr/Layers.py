@@ -1,11 +1,12 @@
 import numpy as np
+from scipy import signal
 
 class Layer:
     def Forward(self, inputs: np.ndarray) -> np.ndarray:
-        pass
+        return inputs
 
     def Backward(self, gradient: np.ndarray, learning_rate: float) -> np.ndarray:
-        pass
+        return gradient
 
 class ReLU(Layer):
     def Forward(self, inputs: np.ndarray) -> np.ndarray:
@@ -50,3 +51,30 @@ class Linear(Layer):
         self.bias -= gradient * learning_rate
 
         return input_gradient
+    
+class Convolutional(Layer):
+    def __init__(self):
+        self.kernel = np.array([
+            [-1, -1, -1],
+            [-1, 16, -1],
+            [-1, -1, -1]
+            ])
+
+    def Forward(self, input) -> np.ndarray:
+        self.input = np.pad(input, pad_width= 1, mode='constant', constant_values=0)
+        self.output = np.copy(input)
+
+        self.output = signal.correlate2d(self.input, self.kernel, "valid")
+
+        return self.output
+    
+class Flatten(Layer):
+    def __init__(self, input_shape, output_shape):
+        self.input_shape = input_shape
+        self.output_shape = output_shape
+
+    def Forward(self, input):
+        return np.reshape(input, self.output_shape)
+
+    def Backward(self, output_gradient, learning_rate):
+        return np.reshape(output_gradient, self.input_shape)
