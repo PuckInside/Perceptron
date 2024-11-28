@@ -27,4 +27,4 @@ class Perceptron:
                     output_gradient = layer.Backward(output_gradient, learning_rate)
         
             if log:
-                print(f"loss - {loss / len(target)}")
+                print(f"loss: {e} - {loss / len(target)}")
